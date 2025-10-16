@@ -49,18 +49,27 @@ export function BlocksEditor({ initialBlocks }: { initialBlocks: Block[] }) {
         }
     }
 
-    async function createEmptyImageBlock() {
+    async function createEmptyImageBlock(blockId: string) {
+        const insertIndex = blockId ? blocks.findIndex((block) => block.id === blockId) + 1 : blocks.length
+
         const blockToCreate = {
             type: "image" as const,
             height: 300,
             width: 400,
             url: "",
-            order: blocks.length,
+            order: insertIndex,
         }
 
         try {
             const createdBlock = await createBlock(blockToCreate)
-            setBlocks((prevBlocks) => [...prevBlocks, createdBlock])
+            if (!blockId) {
+                setBlocks((prevBlocks) => [...prevBlocks, createdBlock])
+            } else {
+                const blockIndex = blocks.findIndex((block) => block.id === blockId)
+                if (blockIndex === -1) return
+
+                setBlocks((prevBlocks) => [...prevBlocks.slice(0, blockIndex + 1), createdBlock, ...prevBlocks.slice(blockIndex + 1)])
+            }
         } catch (error) {
             console.error("Failed to create image block:", error)
         }
@@ -176,7 +185,7 @@ export function BlocksEditor({ initialBlocks }: { initialBlocks: Block[] }) {
                                         ))}
                                         <DropdownMenuSeparator />
                                         <DropdownMenuLabel>Media</DropdownMenuLabel>
-                                        <DropdownMenuItem onClick={createEmptyImageBlock}>Image</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => createEmptyImageBlock(block.id)}>Image</DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                                 {block.type === "text" && (
