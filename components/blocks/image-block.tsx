@@ -7,7 +7,7 @@ import { Item, ItemContent, ItemTitle } from "@/components/ui/item"
 import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ImageBlock as ImageBlockType } from "@/types/block"
-import { CircleAlertIcon, ImageIcon, Trash2Icon } from "lucide-react"
+import { CircleAlertIcon, ImageIcon, PencilIcon, Trash2Icon } from "lucide-react"
 import Image from "next/image"
 import { ReactNode, useState } from "react"
 import { ResizableBox } from "react-resizable"
@@ -65,21 +65,38 @@ export function ImageBlock({ block, onUpdate, onDelete }: { block: ImageBlockTyp
                 </EmptyContent>
             </Empty>
         ) : (
-            <ResizableBox width={dimensions.width} height={dimensions.height} onResizeStop={handleResize} lockAspectRatio minConstraints={[50, 50]} maxConstraints={[1200, 1200]} resizeHandles={["w", "e"]}>
-                <div>
-                    <Image
-                        src={block.url}
-                        height={dimensions.height}
-                        width={dimensions.width}
-                        alt="Preview"
-                        className="h-full w-full object-contain"
-                        onError={(e) => {
-                            e.currentTarget.style.display = "none"
-                            setIsImageError(true)
-                        }}
+            <div className="group relative inline-block">
+                <ResizableBox width={dimensions.width} height={dimensions.height} onResizeStop={handleResize} lockAspectRatio minConstraints={[50, 50]} maxConstraints={[1200, 1200]} resizeHandles={["w", "e"]}>
+                    <div>
+                        <Image
+                            src={block.url}
+                            height={dimensions.height}
+                            width={dimensions.width}
+                            alt="Preview"
+                            className="h-full w-full object-contain"
+                            onError={(e) => {
+                                e.currentTarget.style.display = "none"
+                                setIsImageError(true)
+                            }}
+                        />
+                    </div>
+                </ResizableBox>
+
+                <div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    <ImageUrlInputPopover
+                        trigger={
+                            <Button variant="secondary" size="icon-sm" onPointerDown={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+                                <PencilIcon />
+                            </Button>
+                        }
+                        initialUrl={block.url}
+                        onUrlSubmit={handleUrlSubmit}
                     />
+                    <Button variant="destructive" size="icon-sm" onClick={() => onDelete(block.id)} onPointerDown={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+                        <Trash2Icon />
+                    </Button>
                 </div>
-            </ResizableBox>
+            </div>
         )
     ) : (
         <ImageUrlInputPopover trigger={addImageTrigger} initialUrl={block.url || ""} onUrlSubmit={(url) => onUpdate(block.id, { url })} />

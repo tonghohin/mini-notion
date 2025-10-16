@@ -120,7 +120,7 @@ export function BlocksEditor({ initialBlocks }: { initialBlocks: Block[] }) {
                 <CardTitle>Mini Notion</CardTitle>
                 <CardDescription>Click to add a block.</CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-1 flex-col gap-4">
+            <CardContent className="flex flex-1 flex-col gap-4 overflow-scroll">
                 {blocks.map((block) => (
                     <div key={block.id} className="group flex">
                         <DropdownMenu>
