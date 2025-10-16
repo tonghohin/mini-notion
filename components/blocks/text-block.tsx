@@ -37,6 +37,8 @@ export function TextBlock({ block, onUpdate, onAddBlock, onDelete }: { block: Te
                                 onDelete(block.id)
                             }
                         }}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
                     />
                 </div>
             </PopoverAnchor>
