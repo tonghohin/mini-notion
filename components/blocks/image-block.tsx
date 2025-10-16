@@ -10,9 +10,18 @@ import { ImageBlock as ImageBlockType } from "@/types/block"
 import { CircleAlertIcon, ImageIcon, Trash2Icon } from "lucide-react"
 import Image from "next/image"
 import { ReactNode, useState } from "react"
+import { ResizableBox } from "react-resizable"
+import "react-resizable/css/styles.css"
 
 export function ImageBlock({ block, onUpdate, onDelete }: { block: ImageBlockType; onUpdate: (id: string, updates: Partial<Pick<ImageBlockType, "url" | "width" | "height">>) => void; onDelete: (blockId: string) => void }) {
+    const [dimensions, setDimensions] = useState({ width: block.width || 400, height: block.height || 300 })
     const [isImageError, setIsImageError] = useState(false)
+
+    const handleResize = (e: React.SyntheticEvent, data: { size: { width: number; height: number } }) => {
+        const newDimensions = { width: data.size.width, height: data.size.height }
+        setDimensions(newDimensions)
+        onUpdate(block.id, { width: Math.round(newDimensions.width), height: Math.round(newDimensions.height) })
+    }
 
     function handleUrlSubmit(url: string) {
         onUpdate(block.id, { url })
@@ -56,19 +65,21 @@ export function ImageBlock({ block, onUpdate, onDelete }: { block: ImageBlockTyp
                 </EmptyContent>
             </Empty>
         ) : (
-            <div>
-                <Image
-                    src={block.url}
-                    height={block.height}
-                    width={block.width}
-                    alt="Preview"
-                    className="h-full w-full object-contain"
-                    onError={(e) => {
-                        e.currentTarget.style.display = "none"
-                        setIsImageError(true)
-                    }}
-                />
-            </div>
+            <ResizableBox width={dimensions.width} height={dimensions.height} onResizeStop={handleResize} lockAspectRatio minConstraints={[50, 50]} maxConstraints={[1200, 1200]} resizeHandles={["w", "e"]}>
+                <div>
+                    <Image
+                        src={block.url}
+                        height={dimensions.height}
+                        width={dimensions.width}
+                        alt="Preview"
+                        className="h-full w-full object-contain"
+                        onError={(e) => {
+                            e.currentTarget.style.display = "none"
+                            setIsImageError(true)
+                        }}
+                    />
+                </div>
+            </ResizableBox>
         )
     ) : (
         <ImageUrlInputPopover trigger={addImageTrigger} initialUrl={block.url || ""} onUrlSubmit={(url) => onUpdate(block.id, { url })} />
