@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mini Notion Clone
 
-## Getting Started
+A lightweight Notion-style page editor built with **Next.js**.  
+This project implements the **core requirements** of the Full Stack Engineer Assessment — allowing users to create, edit, reorder, and persist text and image blocks using a simple JSON file as storage.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Core Requirements
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Load and render blocks**  
+  Renders both text and image blocks in a vertical stack.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Add new blocks**
+    - Text blocks: editable content with styles (`H1`, `H2`, `H3`, `Paragraph`)
+    - Image blocks: editable source URL, width, and height
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Edit existing blocks**  
+  Users can update text content, style, or image properties at any time.
 
-## Learn More
+- **Persistence with JSON storage**  
+  All blocks are saved to a local JSON file, ensuring changes remain after page reloads.
 
-To learn more about Next.js, take a look at the following resources:
+## Built with
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js
+- shadcn/ui
+- dnd kit
+- react-resizable
