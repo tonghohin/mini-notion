@@ -1,13 +1,39 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { updateBlockApi } from "@/lib/api-client"
-import { Block, TextBlock as TextBlockType } from "@/types/block"
+import { createBlock, updateBlockApi } from "@/lib/api-client"
+import { Block, TextBlockStyle, TextBlock as TextBlockType } from "@/types/block"
 import { useState } from "react"
 import { TextBlock } from "./text-block"
 
 export function BlocksEditor({ initialBlocks }: { initialBlocks: Block[] }) {
     const [blocks, setBlocks] = useState<Block[]>(initialBlocks)
+
+    async function createEmptyTextBlock(style: TextBlockStyle = "p", blockId?: string) {
+        const insertIndex = blockId ? blocks.findIndex((block) => block.id === blockId) + 1 : blocks.length
+
+        const blockToCreate = {
+            type: "text" as const,
+            content: "",
+            style,
+            order: insertIndex,
+        }
+
+        try {
+            const createdBlock = await createBlock(blockToCreate)
+
+            if (!blockId) {
+                setBlocks((prevBlocks) => [...prevBlocks, createdBlock])
+            } else {
+                const blockIndex = blocks.findIndex((block) => block.id === blockId)
+                if (blockIndex === -1) return
+
+                setBlocks((prevBlocks) => [...prevBlocks.slice(0, blockIndex + 1), createdBlock, ...prevBlocks.slice(blockIndex + 1)])
+            }
+        } catch (error) {
+            console.error("Failed to create text block:", error)
+        }
+    }
 
     async function handleTextBlockUpdate(id: string, updates: Partial<Pick<TextBlockType, "content" | "style">>) {
         const blockIndex = blocks.findIndex((block) => block.id === id)
@@ -39,6 +65,7 @@ export function BlocksEditor({ initialBlocks }: { initialBlocks: Block[] }) {
                         {block.type === "image" && null}
                     </div>
                 ))}
+                <div className="flex-1" onClick={() => createEmptyTextBlock()} />
             </CardContent>
         </Card>
     )
