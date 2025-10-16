@@ -3,16 +3,10 @@
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { textBlockStyleConfig } from "@/config/textBlockStyles"
 import { cn } from "@/lib/utils"
 import { TextBlockStyle, TextBlockStyleSchema, TextBlock as TextBlockType } from "@/types/block"
 import { useState } from "react"
-
-const textBlockStyleConfig: Record<TextBlockStyle, { tag: string; className: string; label: string }> = {
-    h1: { tag: "h1", className: "text-4xl font-bold", label: "Heading 1" },
-    h2: { tag: "h2", className: "text-3xl font-bold", label: "Heading 2" },
-    h3: { tag: "h3", className: "text-2xl font-bold", label: "Heading 3" },
-    p: { tag: "p", className: "text-sm", label: "Text" },
-} as const
 
 export function TextBlock({ block, onUpdate }: { block: TextBlockType; onUpdate: (id: string, updates: Partial<Pick<TextBlockType, "content" | "style">>) => void }) {
     const [isToolbarOpen, setIsToolbarOpen] = useState(false)
