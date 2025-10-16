@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { TextBlockStyle, TextBlockStyleSchema, TextBlock as TextBlockType } from "@/types/block"
 import { useState } from "react"
 
-export function TextBlock({ block, onUpdate }: { block: TextBlockType; onUpdate: (id: string, updates: Partial<Pick<TextBlockType, "content" | "style">>) => void }) {
+export function TextBlock({ block, onUpdate, onAddBlock, onDelete }: { block: TextBlockType; onUpdate: (id: string, updates: Partial<Pick<TextBlockType, "content" | "style">>) => void; onAddBlock: (blockId: string) => void; onDelete: (blockId: string) => void }) {
     const [isToolbarOpen, setIsToolbarOpen] = useState(false)
 
     return (
@@ -26,6 +26,16 @@ export function TextBlock({ block, onUpdate }: { block: TextBlockType; onUpdate:
                             const input = e.currentTarget
                             const selectionLength = (input.selectionEnd ?? 0) - (input.selectionStart ?? 0)
                             setIsToolbarOpen(selectionLength > 0)
+                        }}
+                        onKeyDown={(e) => {
+                            e.stopPropagation()
+                            if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault()
+                                onAddBlock(block.id)
+                            } else if (e.key === "Backspace" && block.content === "") {
+                                e.preventDefault()
+                                onDelete(block.id)
+                            }
                         }}
                     />
                 </div>
